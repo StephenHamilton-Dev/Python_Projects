@@ -1,4 +1,5 @@
 import random
+import os
 
 '''
 Author: Stephen Hamilton
@@ -22,8 +23,10 @@ def computer_guess(x):
           "The user will be prompted with a guess the computer made.\nOnce prompted,"
           "the user will then enter (c) for correct, (h) for too high, and (l) for too"
           " low.\n")
-    print("Game Starts Now!\n")
-    
+    print("Come up with a number in between 1 and 10 for the computer to guess, then press enter to start the game.\n")
+       
+    os.system("pause")
+
     while feedback != 'c':
         guess = random.randint(low, high)
         feedback = input(f"Is {guess} too high (h), too low (l), or correct (c)?\n")
