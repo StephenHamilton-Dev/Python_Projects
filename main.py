@@ -1,12 +1,12 @@
 from game_functions import draw_board, player_turn, player_win
 
-# dictionary to create tictactoe board spaces
-game_board_spaces = {1 : "1", 2 : "2", 3 : "3",
-                     4 : "4", 5 : "5", 6 : "6",
-                     7 : "7", 8 : "8", 9 : "9"}
-
 print("Welcome to Tic Tac Toe!\n"
       "\nTo quit the game, type the number 0 and press enter.\n")
+
+# dictionary to create tictactoe board spaces
+game_board_spaces = {1: "1", 2: "2", 3: "3",
+                     4: "4", 5: "5", 6: "6",
+                     7: "7", 8: "8", 9: "9"}
 
 turn = 0
 playing = True
@@ -42,5 +42,3 @@ while playing:
 
 # draw the final game board for the win
 draw_board(game_board_spaces)
-
-
