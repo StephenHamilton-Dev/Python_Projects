@@ -141,7 +141,7 @@ class Ui_MainWindow(object):
 
         QMetaObject.connectSlotsByName(MainWindow)
 
-    # commen
+    # comment
     def plus_minus(self):
         # grab what is on the screen
         screen = self.outputLabel.text()
