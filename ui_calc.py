@@ -1,19 +1,14 @@
-
-from PyQt5.QtCore import QRect, Qt, QMetaObject, QCoreApplication
-from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QWidget, QLabel, QFrame, QPushButton, QMenuBar, QStatusBar
-
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
-
+import re
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(362, 566)
+        MainWindow.resize(359, 650)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.outputLabel = QLabel(self.centralwidget)
@@ -26,7 +21,7 @@ class Ui_MainWindow(object):
         self.outputLabel.setFrameShadow(QFrame.Raised)
         self.outputLabel.setLineWidth(2)
         self.outputLabel.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
-        self.percentButton = QPushButton(self.centralwidget, clicked= lambda: self.on_click("%"))
+        self.percentButton = QPushButton(self.centralwidget, clicked= lambda: self.percentage_calculation())
         self.percentButton.setObjectName(u"percentButton")
         self.percentButton.setGeometry(QRect(10, 120, 75, 75))
         font1 = QFont()
@@ -108,26 +103,40 @@ class Ui_MainWindow(object):
         self.twoButton.setGeometry(QRect(100, 360, 75, 75))
         self.twoButton.setFont(font1)
         self.twoButton.setFlat(False)
-        self.equalsButton = QPushButton(self.centralwidget, clicked= lambda: self.on_click("="))
+        self.equalsButton = QPushButton(self.centralwidget, clicked= lambda: self.perform_calculation())
         self.equalsButton.setObjectName(u"equalsButton")
-        self.equalsButton.setGeometry(QRect(280, 440, 75, 75))
-        self.equalsButton.setFont(font1)
+        self.equalsButton.setGeometry(QRect(10, 520, 341, 75))
+        font2 = QFont()
+        font2.setPointSize(48)
+        self.equalsButton.setFont(font2)
         self.equalsButton.setFlat(False)
+        '''
         self.plus_minusButton = QPushButton(self.centralwidget, clicked= lambda: self.plus_minus())
         self.plus_minusButton.setObjectName(u"plus_minusButton")
         self.plus_minusButton.setGeometry(QRect(10, 440, 75, 75))
         self.plus_minusButton.setFont(font1)
         self.plus_minusButton.setFlat(False)
+        '''
         self.decimalButton = QPushButton(self.centralwidget, clicked= lambda: self.decimal_point())
         self.decimalButton.setObjectName(u"decimalButton")
-        self.decimalButton.setGeometry(QRect(190, 440, 75, 75))
+        self.decimalButton.setGeometry(QRect(280, 440, 75, 75))
         self.decimalButton.setFont(font1)
         self.decimalButton.setFlat(False)
         self.zeroButton = QPushButton(self.centralwidget, clicked= lambda: self.on_click("0"))
         self.zeroButton.setObjectName(u"zeroButton")
-        self.zeroButton.setGeometry(QRect(100, 440, 75, 75))
+        self.zeroButton.setGeometry(QRect(190, 440, 75, 75))
         self.zeroButton.setFont(font1)
         self.zeroButton.setFlat(False)
+        self.left_Paren = QPushButton(self.centralwidget, clicked= lambda: self.on_click("("))
+        self.left_Paren.setObjectName(u"left_Paren")
+        self.left_Paren.setGeometry(QRect(10, 440, 75, 75))
+        self.left_Paren.setFont(font1)
+        self.left_Paren.setFlat(False)
+        self.right_Paren = QPushButton(self.centralwidget, clicked= lambda: self.on_click(")"))
+        self.right_Paren.setObjectName(u"right_Paren")
+        self.right_Paren.setGeometry(QRect(100, 440, 75, 75))
+        self.right_Paren.setFont(font1)
+        self.right_Paren.setFlat(False)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
@@ -141,19 +150,34 @@ class Ui_MainWindow(object):
 
         QMetaObject.connectSlotsByName(MainWindow)
 
-    # comment
-    def plus_minus(self):
+    def percentage_calculation(self):
         # grab what is on the screen
         screen = self.outputLabel.text()
-        # variable to hold value of number entered on screen
-        value = float(screen)
+        answer = eval(self.outputLabel.text())
+        if answer == '0':
+            self.outputLabel.setText(screen)
+        else:
+            answer = answer / 100
+            self.outputLabel.setText(str(answer))
 
-        if value > 0.0:
-            screen = '-' + screen  # concatenate a minus symbol to the number on screen
-        elif value < 0.0:
-            screen = screen[1:]  # slice off the negative sign in front of the number
+    def perform_calculation(self):
+        self.outputLabel.text()
+        try:
+            answer = eval(self.outputLabel.text())
+            self.outputLabel.setText(str(answer))
+        except:
+            self.outputLabel.setText("ERROR")
 
-        self.outputLabel.setText(screen)  # output to screen again
+    '''
+    def plus_minus(self):
+        # Grab what's on the screen already
+        screen = self.outputLabel.text()
+        #value = float(screen)
+        if "-" in screen:
+            self.outputLabel.setText(screen.replace("-", ""))
+        elif "-" not in screen:
+            self.outputLabel.setText(f'-{screen}')
+       '''
 
     def back_space(self):
         # grab what is on the screen
@@ -166,15 +190,19 @@ class Ui_MainWindow(object):
     # set the decimal point
     def decimal_point(self):
         screen = self.outputLabel.text()  # variable to hold
+        num_list = re.split("\+|\*|-|/|%", screen)
 
-        # if the -1 position index in the array equals a decimal
-        if screen[-1] == '.':
-            screen = self.outputLabel.text()
-            screen = screen[:-1]
+        if ("+" in screen or "-" in screen or "*" in screen or "/" in screen or "%" in screen) and "." not in \
+                num_list[-1]:
+            screen = f"{screen}."
             self.outputLabel.setText(screen)
+
+        elif '.' in screen:
+            pass
+
         else:
-            # add the text other than the decimal to screen
-            self.outputLabel.setText(f"{screen}.")
+            screen = f'{screen}.'
+            self.outputLabel.setText(screen)
 
     # set the text of the output label
     def on_click(self, click):
@@ -209,9 +237,8 @@ class Ui_MainWindow(object):
         self.threeButton.setText(QCoreApplication.translate("MainWindow", u"3", None))
         self.twoButton.setText(QCoreApplication.translate("MainWindow", u"2", None))
         self.equalsButton.setText(QCoreApplication.translate("MainWindow", u"=", None))
-        self.plus_minusButton.setText(QCoreApplication.translate("MainWindow", u"+/-", None))
+        #self.plus_minusButton.setText(QCoreApplication.translate("MainWindow", u"+/-", None))
         self.decimalButton.setText(QCoreApplication.translate("MainWindow", u".", None))
         self.zeroButton.setText(QCoreApplication.translate("MainWindow", u"0", None))
-
-    # retranslateUi
-
+        self.right_Paren.setText(QCoreApplication.translate("MainWindow", u")", None))
+        self.left_Paren.setText(QCoreApplication.translate("MainWindow", u"(", None))
